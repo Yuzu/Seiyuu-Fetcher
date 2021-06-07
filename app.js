@@ -11,34 +11,59 @@
 
 function seiyuuSearch() {
 
-    seiyuuName = document.getElementById("name").value;
-    console.log(seiyuuName);
+    let seiyuuName = document.getElementById("name").value;
+    //console.log(seiyuuName);
 
-    
-
-    var query = `
-    query ($search: String) { # Define which variables will be used in the query (id)
-    Media (search: $search, type: ANIME) { # Insert our variables into the query arguments (id) (type: ANIME is hard-coded in the query)
-        id
-        title {
-        romaji
-        english
-        native
-        }
-        tags {
-            name
-        }
-    }
-    }
+    let staffQuery = `
+        query {
+            Staff (search: "${seiyuuName}") {
+                id
+                name {
+                    full
+                    native
+                }
+                image {
+                    large
+                }
+                characterMedia (page: 1 sort: POPULARITY_DESC perPage:25) {
+                    pageInfo {
+                        total
+                        perPage
+                        currentPage
+                        lastPage
+                        hasNextPage
+                      }
+                      edges  {
+                        characterRole
+                        node {
+                          coverImage {
+                            extraLarge
+                          }
+                          title {
+                            english
+                            native
+                          }
+                        }
+                        characters {
+                          name {
+                            full
+                            native
+                          }
+                          image {
+                            large
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
     `;
 
-    // Define our query variables and values that will be used in the query request
-    var variables = {
-        search: "Kuma Kuma Kuma"
-    };
-
+    //console.log(staffQuery)
+    
+    // Taken from https://anilist.gitbook.io/anilist-apiv2-docs/overview/graphql/getting-started
     // Define the config we'll need for our Api request
-    var url = 'https://graphql.anilist.co',
+    let url = 'https://graphql.anilist.co',
         options = {
             method: 'POST',
             headers: {
@@ -46,18 +71,31 @@ function seiyuuSearch() {
                 'Accept': 'application/json',
             },
             body: JSON.stringify({
-                query: query,
-                variables: variables
+                query: staffQuery,
             })
         };
 
+    
+    fetch(url, options)
+            .then(status)
+            .then(json)
+            .then(function(data) {
+                console.log('Request succeeded with JSON response', data);
+                console.log(JSON.stringify(data, null, 2));
+                return data;
+            })
+            .then(buildPage)
+            .catch(function(error) {
+                alert("Error, person not found.");
+                console.log('Request failed', error);
+             })
+            ;
 
-    // Make the HTTP Api request
-    fetch(url, options).then(handleResponse)
-                    .then(handleData)
-                    .catch(handleError);
     
+    return true;
+
     
+    /*
     if (Math.random() < 0.5) {
         var anchor = document.getElementById("initial");
     anchor.appendChild(document.createElement("p").appendChild(document.createTextNode("LESS")));
@@ -66,21 +104,29 @@ function seiyuuSearch() {
         var anchor = document.getElementById("initial");
         anchor.appendChild(document.createElement("p").appendChild(document.createTextNode("MORE")));
     }
+    */
 
-    return true;
+    //let staffID = staffData.value.data.staff.id;
+    //console.log(staffID);
+    //console.log(staffData);
 }
 
-function handleResponse(response) {
-    return response.json().then(function (json) {
-        return response.ok ? json : Promise.reject(json);
-    });
+
+// Excerpt taken from https://developers.google.com/web/updates/2015/03/introduction-to-fetch
+function status(response) {
+    if (response.status >= 200 && response.status < 300) {
+      return Promise.resolve(response)
+    } else {
+      return Promise.reject(new Error(response.statusText))
+    }
+  }
+
+// Excerpt taken from https://developers.google.com/web/updates/2015/03/introduction-to-fetch
+function json(response) {
+    return response.json()
 }
 
-function handleData(data) {
-    console.log(JSON.stringify(data, null, 2));
-}
-
-function handleError(error) {
-    alert('Error, check console (Not found)');
-    console.error(error);
+  
+function buildPage(data) {
+    
 }
