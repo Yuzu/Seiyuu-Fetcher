@@ -18,10 +18,10 @@
 // If even after this we're out of roles, we just show what we have.
 
 function seiyuuSearch() {
-
+    
     let seiyuuName = document.getElementById("name").value;
     //console.log(seiyuuName);
-
+    
     // 2 pages should be fine for our purposes.
 
     // TODO - The issue with my original approach was that the results of a fetch were only retrievable in the then() scope of each fetch. The issue there
@@ -68,6 +68,8 @@ function seiyuuSearch() {
     )
     .then(json => {
         console.log('Request succeeded with JSON response', json);
+        document.getElementById('errorname').innerHTML=""; 
+        teardown();
         //console.log(JSON.stringify(json[0], null, 2));
         //console.log(JSON.stringify(json[1], null, 2));
         console.log(json);
@@ -75,28 +77,13 @@ function seiyuuSearch() {
     })
     .then(buildPage)
     .catch(function(error) {
-        alert("Error, person not found.");
+        //alert("Error, person not found.");
+        document.getElementById('errorname').innerHTML="Invalid Search: No results found."; 
         console.log('Request failed', error);
      })
     ;
 
     return true;
-
-    
-    /*
-    if (Math.random() < 0.5) {
-        var anchor = document.getElementById("initial");
-    anchor.appendChild(document.createElement("p").appendChild(document.createTextNode("LESS")));
-    }
-    else {
-        var anchor = document.getElementById("initial");
-        anchor.appendChild(document.createElement("p").appendChild(document.createTextNode("MORE")));
-    }
-    */
-
-    //let staffID = staffData.value.data.staff.id;
-    //console.log(staffID);
-    //console.log(staffData);
 }
 
 
@@ -119,9 +106,14 @@ function status(response) {
 // Clean up the page.
 function teardown() {
     console.log("Cleaning up");
+    let all = document.querySelectorAll('[id=container]');
+    for (let i = 0; i < all.length; i++) {
+        all[i].remove();
+    }
 }
 
 function buildPage(data) {
+    
     console.log(data);
 
     let info = data[0].data.Staff;
@@ -181,7 +173,7 @@ function buildPage(data) {
 
     for (let i = 0; i < roles.length; i++) {
 
-        if (roles[i].node.title.english === undefined) {
+        if (roles[i].node.title.english === null) {
             var animeName = roles[i].node.title.romaji;
         }
         else {
