@@ -1,22 +1,3 @@
-// TODO - Rewrite queries and determine what fields we want. We'll need an initial query to get a match (No need to check for error-no match bc already taken care of)
-// We then pull the staff ID and name from that and make another query using the ID to get the anime we need.
-// We probably only want to look for main roles, I'm not sure how to make the query do that for us; worst case we might have to just do it ourselves.
-// We'd also need to deduplicate the array (only if the characters are the same - in case they voice multiple main characters for some reason.)
-
-// TODO - Write the code to effectively build the page. I'm thinking 10 shows should be enough. In reference to above, the stuff we'd probably need is:
-// Character picture, character name, link to character (hyperlink it in name and picture), show name, link to show (hyperlink it in name)
-
-// TODO - figure out when to refresh/clear previous results on a new search. 
-// Maybe create an "anchor" point that the images come from then just go along and delete the elements whenever we get a request?
-
-// TODO - figure out how to dedupe and only get main roles without paging too much.
-// Every time we page, we have to dedupe.
-// Keep track of the roles we want to display in an array.
-// Maybe just take first page (max 25 per page) -> filter for only main roles -> if first page has 10 main roles, we're fine. just add all 10 to the array.
-// else we have to keep a running sum of the total main roles and keep paging (ie making a new request) and adding to the array until we hit 10 main roles.
-// If we ever run out of main roles, we just go back to the beginning and down the supporting roles.
-// If even after this we're out of roles, we just show what we have.
-
 function seiyuuSearch() {
     
     let seiyuuName = document.getElementById("name").value;
