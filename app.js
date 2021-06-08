@@ -128,7 +128,8 @@ function buildPage(data) {
 
     let name = info.name.full;
     let nativeName = info.name.native;
-    let seiyuuPic = info.image;
+    let seiyuuPic = info.image.large;
+    let seiyuuURL = info.siteUrl;
 
     const roles = [];
 
@@ -158,11 +159,46 @@ function buildPage(data) {
         populateArray(roles, shows, main=false, supporting=false);
     }
 
-    // else we're ready to build the page.
     console.log(roles);
-    console.log('FINAL ROLES', roles.length);
+    console.log('FINAL ROLES FOR:', name, "(", nativeName, ")", roles.length);
     for (let i = 0; i < roles.length; i++) {
         console.log(roles[i].node.title.romaji, "-> ", roles[i].characters[0].name.full, "(", roles[i].characterRole, ")");
+    }
+
+    // Now we can properly build the page.
+    var seiyuu_img = document.getElementById("seiyuu_img");
+    seiyuu_img.src = seiyuuPic;
+
+    var seiyuu_img_link = document.getElementById("seiyuu_img_link");
+    seiyuu_img_link.href = seiyuuURL;
+
+    var seiyuu_name = document.getElementById("seiyuu_name");
+    seiyuu_name.innerText = `${name}\n(${nativeName})`;
+    seiyuu_name.href = seiyuuURL;
+
+    var anchor = document.getElementById("anchor");
+    var current = anchor;
+
+    for (let i = 0; i < roles.length; i++) {
+
+        if (roles[i].node.title.english === undefined) {
+            var animeName = roles[i].node.title.romaji;
+        }
+        else {
+            var animeName = roles[i].node.title.english;
+        }
+        let animeName_native = roles[i].node.title.native;
+        let animeImage = roles[i].node.coverImage.large;
+        let animeURL = roles[i].node.siteUrl;
+
+        let characterName = roles[i].characters[0].name.full;
+        let characterName_native = roles[i].characters[0].name.native;
+        let characterImage = roles[i].characters[0].image.large;
+        let characterURL = roles[i].characters[0].siteUrl;
+
+        let template = createTemplate(animeName, animeName_native, animeImage, animeURL, characterName, characterName_native, characterImage, characterURL);
+        //console.log(template);
+        anchor.insertAdjacentHTML("beforeend", template);
     }
 }
 
@@ -249,6 +285,7 @@ function produceQuery(seiyuuName, pageNum) {
     return `
     query {
         Staff (search: "${seiyuuName}") {
+            siteUrl
             id
             name {
                 full
@@ -269,13 +306,14 @@ function produceQuery(seiyuuName, pageNum) {
                     characterRole
                     node {
                       coverImage {
-                        extraLarge
+                        large
                       }
                       title {
                         english
                         romaji
                         native
                       }
+                      siteUrl
                     }
                     characters {
                       name {
@@ -285,10 +323,33 @@ function produceQuery(seiyuuName, pageNum) {
                       image {
                         large
                       }
+                      siteUrl
                     }
                   }
                 }
               }
             }
 `;
+}
+
+function createTemplate(animeName, animeName_native, animeImage, animeURL, characterName, characterName_native, characterImage, characterURL){
+    return `
+        <div id="container">
+            <div class="anime" style="display: inline-block;">
+                <a id="animeName" class="animeName" target="_blank" href="${animeURL}">${animeName}<br>(${animeName_native})</a>
+                <a id="animeImage_link" class="animeImage_link" target="_blank" href="${animeURL}">
+                    <img id="animeImage" src="${animeImage}"/>
+                </a>
+            </div>
+
+            <div class="character" style="display: inline-block;">
+                <a id="characterName" class="characterName" target="_blank" href="${characterURL}">${characterName}<br>(${characterName_native})</a>
+                <a id="characterImage_link" class="characterImage_link" target="_blank" href="${characterURL}">
+                    <img id="characterImage" src="${characterImage}"/>
+                </a>
+            </div>
+
+            <hr class="rounded">
+        </div>
+    ` 
 }

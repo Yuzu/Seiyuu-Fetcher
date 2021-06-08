@@ -1,0 +1,50 @@
+.seiyuu_info {
+    text-align: center;
+    width: 460;
+    font-size: larger;
+}
+
+.seiyuu_info img {
+    display: block;
+    margin: 0 auto;
+}
+
+hr.rounded {
+    border-top: 8px solid #bbb;
+    border-radius: 5px;
+    vertical-align: bottom;
+  }
+
+
+#container {
+    width:960px;
+    height: auto;
+}
+
+.anime {
+    text-align: center;
+    width: 460;
+    font-size: larger;
+}
+
+.anime img {
+    display: block;
+    margin: 0 auto;
+}
+
+.character {
+    text-align: center;
+    width: 460;
+    font-size: larger;
+}
+
+.character img {
+    display: block;
+    margin: 0 auto;
+}
+
+#anime, #character {
+    float: left;
+    display: inline;
+    width: 49%;
+}
