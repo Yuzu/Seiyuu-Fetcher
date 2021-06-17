@@ -182,12 +182,19 @@ function populateArray(roles, shows, main=true, supporting=false) {
     console.log("roles:", roles);
     console.log('ORIGINAL', shows.length);
     for (let i = 0; i < shows.length; i++) {
+        if (shows[i].characters[0] === null) {
+            console.log(shows[i].node.title.romaji, " -> NULL (Thanks Anilist API!!!)");
+            continue;
+        }
         console.log(shows[i].node.title.romaji, " -> ", shows[i].characters[0].name.full);
     }
 
     let shows_deduped = [];
     let obj = {};
     for (let i = 0; i < shows.length; i++) {
+        if (shows[i].characters[0] === null) {
+            continue;
+        }
         let characterName = shows[i].characters[0].name.full;
 
         // If we have the same character, we don't want to overwrite the name since this dupe has a lower popularity.
@@ -200,6 +207,9 @@ function populateArray(roles, shows, main=true, supporting=false) {
         else {
             let dupe = false;
             for (let j = 0; j < roles.length; j++) {
+                if (shows[i].characters[0] === null) {
+                    continue;
+                }
                 if (roles[j].characters[0].name.full === characterName) {
                     dupe = true;
                     break;
