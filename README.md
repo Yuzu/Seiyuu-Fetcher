@@ -9,7 +9,7 @@ Enter the name of a seiyuu/voice actor from Japanese media and the web app will 
 If the seiyuu does not have 10 main character roles, next in priority will be supporting roles, followed by background roles.
 
 ## Contributing
-This is a pretty simple web app that replicates functionality you can find on AniList anyways.
+This is a pretty simple web app that replicates functionality you can find on AniList while implementing new funcationality by expanding more on the end of determining which roles to show you.
 
 It's my first time writing anything in JavaScript and HTML and CSS for that matter, so pointers would be greatly appreciated!
 
